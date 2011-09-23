@@ -1,0 +1,30 @@
+#ifndef PREY_H
+#define PREY_H
+
+#include <utility>
+#include "../thread/thread.h"
+#include "../common/common.h"
+
+
+class prey : public thread{
+ public:
+  prey(semaphor*, resource*);
+  prey(std::pair<int,int>, semaphor*, resource*);
+  ~prey();
+
+ protected:
+  const bool is_outside_box(std::pair<int,int> new_pos) const;
+  const std::pair<int,int> choose_next_pos() const;
+  void set();
+  void body();
+
+ private:
+  const bool is_ok() const; //used for debugging
+  std::pair<int,int> position;
+  int fertility;
+  int life_steps;
+  semaphor* my_sem;
+  resource* my_res;
+};
+
+#endif //PREY_H
