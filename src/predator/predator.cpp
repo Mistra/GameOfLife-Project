@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <list>
+#include <unistd.h>
 
 #include "predator.h"
 

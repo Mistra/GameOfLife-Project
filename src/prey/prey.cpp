@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <list>
+#include <unistd.h>
 #include "prey.h"
 
 using namespace std;
