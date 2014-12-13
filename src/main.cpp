@@ -19,15 +19,12 @@
 #include <iostream>
 #include "prey/prey.h"
 #include "predator/predator.h"
-#include <cassert>
-
-//using namespace std;
 
 int main(){
 
   resource controller;
   semaphor mysem;
-  
+
   for(int i=0; i<70; ++i){
     predator* pred=new predator(&mysem, &controller);
     mysem.lock_list();
@@ -48,4 +45,3 @@ int main(){
   }
   return 0;
 }
-
