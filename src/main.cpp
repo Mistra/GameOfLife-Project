@@ -17,31 +17,31 @@
 //Boston, MA  02110-1301, USA.
 
 #include <iostream>
-#include "prey/prey.h"
-#include "predator/predator.h"
+#include <thread>
+#include "common.h"
+#include "entity.h"
 
 int main(){
 
-  resource controller;
-  semaphor mysem;
+    resource controller;
+    semaphor mysem;
 
-  for(int i=0; i<70; ++i){
-    predator* pred=new predator(&mysem, &controller);
-    mysem.lock_list();
-    controller.track(pred);
-    mysem.unlock_list();
-    pred->begin();
-  }
-  for(int i=0; i<200; ++i){
-    prey* pre=new prey(&mysem, &controller);
-    mysem.lock_list();
-    controller.track(pre);
-    mysem.unlock_list();
-    pre->begin();
-  }
-  while(true){
-    controller.draw_table();
-    controller.garbage_collector(&mysem);
-  }
-  return 0;
+    for(int i=0; i<70; ++i){ //70
+        entity* ent=new entity(&mysem, &controller);
+        std::thread pro(routine, ent);
+        pro.detach();
+    }
+    /*
+    for(int i=0; i<200; ++i){
+        prey* pre=new prey(&mysem, &controller);
+        mysem.lock_list();
+        controller.track(pre);
+        mysem.unlock_list();
+        pre->begin();
+    }
+    */
+    while(true){
+        controller.draw_table();
+    }
+    return 0;
 }

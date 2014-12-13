@@ -6,6 +6,11 @@
 
 using namespace std;
 
+void routine(entity* p_this) {
+    p_this->set();
+    p_this->body();
+}
+
 semaphor::semaphor(){
   for(int i=0;i<25;++i)
     for(int j=0;j<80;++j)
@@ -24,6 +29,7 @@ void semaphor::lock(int x, int y){
   //std::cout<<"Locked "<<x<<" "<<y<<std::endl;
   sem_wait(&sem_table[x][y]);
 }
+
 void semaphor::unlock(int x, int y){
   //std::cout<<"Unlocked "<<x<<" "<<y<<std::endl;
   sem_post(&sem_table[x][y]);
@@ -47,11 +53,7 @@ void resource::draw_table(){
   cout<<"N. threads: "<<pthread_list.size()<<endl;
 }
 
-void resource::track(thread* pthread){
-  pthread_list.push_back(pthread);
-}
-
-std::pair<int,int> resource::get_random_pos(char id, semaphor* sem, thread* p_thread){
+std::pair<int,int> resource::get_random_pos(char id, semaphor* sem, entity* p_thread){
     while(true){
       int x=(rand()%80);
       int y=(rand()%25);
@@ -64,22 +66,9 @@ std::pair<int,int> resource::get_random_pos(char id, semaphor* sem, thread* p_th
 	return res;
       }
       sem->unlock(x,y);
-    }	
+    }
   }
 
-void resource::garbage_collector(semaphor* my_sem){
-  my_sem->lock_list();
-  list<thread*>::iterator list_it; //iterator to list<*thread>
-  list_it=pthread_list.begin(); //iterator points the beginning
-  while(list_it!=pthread_list.end()){ //while not at end
-    if( (*list_it)->ready ){ //if the thread is ready
-      delete *list_it; //destroy it
-      list_it=pthread_list.erase(list_it); //and delete the pointer
-    }
-    else ++list_it; //else go on
-  }
-  my_sem->unlock_list();
-}
 
 bool resource::inside(int x, int y){
   if(x<0 or x>79) return false;
@@ -98,30 +87,30 @@ bool resource::look_around(std::pair<int,int> new_pos, char id){
 }
 
 int resource::is_joinable(std::pair<int,int> new_pos, char id){
-  int x=new_pos.first;
-  int y=new_pos.second;
-  if (!inside(x,y))
-    return 0;
-  if (table[x][y].first==' ')
-    return 1;
-  if (table[x][y].first=='p' and id=='t')
-    return 2;
-  return 0;
-}
+    int x=new_pos.first;
+    int y=new_pos.second;
+    if (!inside(x,y))
+        return 0;
+        if (table[x][y].first==' ')
+            return 1;
+            if (table[x][y].first=='p' and id=='t')
+                return 2;
+                return 0;
+            }
 
-bool resource::still_alive(std::pair<int, int> new_pos, thread* p_thread){
+bool resource::still_alive(std::pair<int, int> new_pos, entity* p_thread){
   if(table[new_pos.first][new_pos.second].second==p_thread)
     return true;
   return false;
 }
-    
 
-void resource::get_position(std::pair<int,int> new_pos, char id, thread* p_thread){
+
+void resource::get_position(std::pair<int,int> new_pos, char id, entity* p_thread){
   table[new_pos.first][new_pos.second].first=id;
   table[new_pos.first][new_pos.second].second=p_thread;
 }
 
-  void resource::switch_position(std::pair<int,int> position, std::pair<int,int> new_pos, char id, thread* p_thread){
+  void resource::switch_position(std::pair<int,int> position, std::pair<int,int> new_pos, char id, entity* p_thread){
   table[position.first][position.second].first=' ';
   table[position.first][position.second].second=NULL;
   table[new_pos.first][new_pos.second].first=id;

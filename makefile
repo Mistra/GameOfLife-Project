@@ -4,24 +4,24 @@
 
 PROJECT='Preys and Predators'
 MAKEFILE_VERSION=1.0
-PROJECT_VERSION=0.6
+PROJECT_VERSION=1.1dev
 AUTHOR=Giulio Mistrangelo
 
 #Variables used to customize the output of the makefile:
-INPUT_FILES=main.cpp thread.cpp predator.cpp common.cpp prey.cpp
+INPUT_FILES=main.cpp common.cpp entity.cpp
 #Source directory, default: src/ or leave blank
-S_DIR=src/ src/predator src/common src/thread src/prey
+S_DIR=src/ #src/common src/entity
 #Object directory, default: obj/ or leave blank
 O_DIR=obj/
 #Executable directory, default: exec/ or leave blank
-E_DIR=exec/
+E_DIR=bin/
 #Name of the executable, default: project
 TARGET=project
 
 CC=g++
-CFLAGS=-c -Wall #-D NDEBUG
+CFLAGS=-c -Wall -std=c++11 #-D NDEBUG
 LDFLAGS=-lpthread
-SOURCE=$(addprefix src/, $(INPUT_FILES))
+SOURCE=$(addprefix $(S_DIR), $(INPUT_FILES))
 VPATH=$(S_DIR)
 OBJ=$(addprefix $(O_DIR), $(INPUT_FILES:.cpp=.o))
 
@@ -29,7 +29,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJ)
 	@echo -e '\e[1;34m'linking: $(notdir $^) to $(notdir $@)'\033[0m'
-	@mkdir -p exec
+	@mkdir -p $(E_DIR)
 	@$(CC) -o $(E_DIR)$@ $^ $(LDFLAGS)
 	@echo -e '\e[1;31m'make: all done'\033[0m'
 

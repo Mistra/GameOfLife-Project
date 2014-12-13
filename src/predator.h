@@ -1,16 +1,15 @@
-#ifndef PREY_H
-#define PREY_H
+#ifndef PREDATOR_H
+#define PREDATOR_H
 
 #include <utility>
-#include "../thread/thread.h"
-#include "../common/common.h"
+#include "common.h"
 
 
-class prey : public thread{
+class predator{
  public:
-  prey(semaphor*, resource*);
-  prey(std::pair<int,int>, semaphor*, resource*);
-  ~prey();
+  predator(semaphor*, resource*);
+  predator(std::pair<int,int>, semaphor*, resource*);
+  ~predator();
 
  protected:
   const bool is_outside_box(std::pair<int,int> new_pos) const;
@@ -27,4 +26,4 @@ class prey : public thread{
   resource* my_res;
 };
 
-#endif //PREY_H
+#endif //PREDATOR_H
