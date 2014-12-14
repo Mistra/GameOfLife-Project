@@ -8,7 +8,7 @@ PROJECT_VERSION=1.1dev
 AUTHOR=Giulio Mistrangelo
 
 #Variables used to customize the output of the makefile:
-INPUT_FILES=main.cpp common.cpp entity.cpp
+INPUT_FILES=main.cpp common.cpp entity.cpp painter.cpp
 #Source directory, default: src/ or leave blank
 S_DIR=src/ #src/common src/entity
 #Object directory, default: obj/ or leave blank

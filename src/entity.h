@@ -4,13 +4,12 @@
 #include <utility>
 #include "common.h"
 
-class semaphor;
 class resource;
 
 class entity{
 public:
-    entity(semaphor*, resource*);
-    entity(std::pair<int,int>, semaphor*, resource*);
+    entity(resource*);
+    entity(std::pair<int,int>, resource*);
     ~entity();
 
     void set();
@@ -25,8 +24,10 @@ private:
     std::pair<int,int> position;
     int fertility;
     int life_steps;
-    semaphor* my_sem;
+    resource* my_sem;
     resource* my_res;
 };
+
+void routine(entity* ent);
 
 #endif

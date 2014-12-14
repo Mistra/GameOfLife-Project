@@ -1,24 +1,22 @@
-#include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include <list>
 #include <unistd.h>
 #include "entity.h"
 
 using namespace std;
 
-entity::entity(semaphor* sem, resource* res) {
+entity::entity(resource* res) {
   position.first=-1;
   position.second=-1;
   my_res=res;
-  my_sem=sem;
+  my_sem=res;
   life_steps=30;
   fertility=0;
 }
 
-entity::entity(pair<int,int> pos, semaphor* sem, resource* res) {
+entity::entity(pair<int,int> pos, resource* res) {
   my_res=res;
-  my_sem=sem;
+  my_sem=res;
   position=pos;
   life_steps=30;
   fertility=0;
@@ -54,7 +52,7 @@ void
 entity::set() {
   srand((unsigned)time(NULL));
   if(position.first==-1){
-    position=my_res->get_random_pos('p', my_sem, this);
+    position=my_res->get_random_pos('p', this);
     return;
   }
   pair<int,int> new_pos;
@@ -109,9 +107,16 @@ entity::body() {
   }
 }
 
+void routine(entity* ent) {
+  ent->set();
+  ent->body();
+}
+
+/*
 const bool
 entity::is_ok() const {
   if (position.first<0 or position.first>79) return false;
   if (position.second<0 or position.second>24) return false;
   return true;
 }
+*/
