@@ -6,7 +6,10 @@
 class sheep: public entity {
 public:
   sheep(table*);
+  sheep(table*, position);
   ~sheep(){}
+protected:
+  void reproduce();
   char get_sign() const;
 
 };

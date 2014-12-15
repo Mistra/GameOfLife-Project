@@ -3,12 +3,6 @@
 
 #include "position.h"
 
-/*
-#include <cstdlib>
-#include <ctime>
-#include <unistd.h>
-*/
-
 position::position():
                   dice4(0,3),
                   dice25(0,24),
@@ -24,8 +18,6 @@ position::position(int x, int y):
 
 void
 position::set_random(std::default_random_engine &dre) {
-  //x=(rand()%80);
-  //y=(rand()%25);
   x=dice80(dre);
   y=dice25(dre);
 }
@@ -37,7 +29,6 @@ position::get_close(std::default_random_engine &dre){
   do {
     x1 = x;
     y1 = y;
-    //rand()%4
     switch(dice4(dre)){ //0=N, 1=E, 2=S, 3=W
       case 0: y1 = y+1; break;
       case 1: x1 = x+1; break;
@@ -47,6 +38,16 @@ position::get_close(std::default_random_engine &dre){
   }
   while(is_outside(x1, y1));
   return position(x1, y1);
+}
+
+std::vector<position>
+position::pos_around() {
+  std::vector<position> vec;
+  if (!is_outside(x+1,y) ) vec.push_back(position(x+1,y));
+  if (!is_outside(x-1,y) ) vec.push_back(position(x-1,y));
+  if (!is_outside(x,y+1) ) vec.push_back(position(x,y+1));
+  if (!is_outside(x,y-1) ) vec.push_back(position(x,y-1));
+  return vec;
 }
 
 bool

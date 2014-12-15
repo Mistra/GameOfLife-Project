@@ -9,29 +9,38 @@ class table;
 class entity{
 public:
   entity(table*);
-//  entity(std::pair<int,int>, resource*);
+  entity(table*, position);
   virtual ~entity();
 
+  bool operator==(entity& other) {
+    return get_id() == other.get_id();
+  }
   virtual char get_sign() const;
   void live();
 
 protected:
   void spawn();
-  bool shift();
+  void shift();
+  virtual void reproduce()=0;
   void rest();
   void die();
 
 protected:
+  bool i_was_killed();
   bool is_eatable(entity*);
-//  const bool is_outside_box(std::pair<int,int> new_pos) const;
-//  const std::pair<int,int> choose_next_pos() const;
+  bool similars_around();
 
-private:
+protected:
+  std::thread::id get_id() {
+    return std::this_thread::get_id();
+  }
+
   std::default_random_engine dre;
   table* grid;
   position pos;
   int life_steps;
   int fertility;
+  bool r_spawn;
 };
 
 void routine(entity* ent);

@@ -2,6 +2,7 @@
 #define POSITION_HH
 
 #include <random>
+#include <vector>
 
 class position {
 public:
@@ -10,6 +11,7 @@ public:
 
   void set_random(std::default_random_engine &dre);
   position get_close(std::default_random_engine &dre);
+  std::vector<position> pos_around();
   bool is_outside(int x, int y);
 
   int x, y;

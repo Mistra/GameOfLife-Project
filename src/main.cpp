@@ -16,7 +16,7 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor,
 //Boston, MA  02110-1301, USA.
 
-//#include <iostream>
+#include <iostream>
 #include <thread>
 
 #include "table.h"
@@ -24,21 +24,14 @@
 #include "painter.h"
 
 int main(){
+
   table field;
   for(int i=0; i<70; ++i){ //70
     entity* ent=new sheep(&field);
     std::thread sheep(routine, ent);
     sheep.detach();
   }
-  /*
-  for(int i=0; i<200; ++i){
-  prey* pre=new prey(&mysem, &controller);
-  mysem.lock_list();
-  controller.track(pre);
-  mysem.unlock_list();
-  pre->begin();
-}
-*/
+
   painter paint(&field);
   paint.show();
   return 0;
