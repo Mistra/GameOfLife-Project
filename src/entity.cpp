@@ -1,7 +1,6 @@
-#include <cstdlib>
-#include <ctime>
-#include <unistd.h>
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include "entity.h"
 
@@ -14,18 +13,12 @@ enum death_causes{
 
 entity::entity(table* grid):
                grid(grid),
-               life_steps(3),
+               life_steps(30),
                fertility(0) {
-  srand((unsigned)time(NULL));
+  unsigned seed = std::chrono::steady_clock::now().time_since_epoch().count();
+  dre.seed(seed);
+  //srand((unsigned)time(NULL));
 }
-
-/*entity::entity(pair<int,int> pos, resource* res) {
-  my_res=res;
-  my_sem=res;
-  position=pos;
-  life_steps=30;
-  fertility=0;
-}*/
 
 entity::~entity(){
 }
@@ -51,7 +44,7 @@ void
 entity::spawn() {
   bool found;
   do {
-    pos.set_random();
+    pos.set_random(dre);
     grid->claim(pos);
     found = is_eatable( grid->get(pos) );
     if (!found)
@@ -67,7 +60,7 @@ entity::shift() {
   bool found;
   position next;
   do {
-    next = pos.get_close();
+    next = pos.get_close(dre);
     grid->claim(next);
     found = is_eatable( grid->get(next) );
     if (!found) {
@@ -76,7 +69,6 @@ entity::shift() {
   }
   while(!found); //is_eatable or/and unclaim as condition
   grid->claim(pos); //CHECK IF NOT DEAD
-  //std::cout << "shifting from:" << x << " " << y << " to "<< x1 << " " << y1<< std::endl;
   grid->shift(pos, next);
   grid->unclaim(pos);
   grid->unclaim(next);
@@ -86,7 +78,9 @@ entity::shift() {
 
 void
 entity::rest() {
-  usleep(rand()%1900001+100000);
+  std::uniform_int_distribution<int> dice(1, 20);
+  int milliseconds = dice(dre)*100;
+  std::this_thread::sleep_for (std::chrono::milliseconds(milliseconds));
 }
 
 void
@@ -98,6 +92,10 @@ bool
 entity::is_eatable(entity* other) {
   if (other == nullptr) return true;
   return false;
+}
+
+void routine(entity* ent) {
+  ent->live();
 }
 
 /*
@@ -183,9 +181,7 @@ entity::body() {
   }
 }*/
 
-void routine(entity* ent) {
-  ent->live();
-}
+
 
 /*
 const bool

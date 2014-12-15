@@ -27,6 +27,7 @@ protected:
 //  const std::pair<int,int> choose_next_pos() const;
 
 private:
+  std::default_random_engine dre;
   table* grid;
   position pos;
   int life_steps;

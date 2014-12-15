@@ -1,7 +1,4 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <unistd.h>
 #include "table.h"
 
 using namespace std;
