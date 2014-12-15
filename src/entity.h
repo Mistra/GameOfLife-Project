@@ -10,9 +10,9 @@ class entity{
 public:
   entity(table*);
 //  entity(std::pair<int,int>, resource*);
-  ~entity();
+  virtual ~entity();
 
-  char get_sign() const;
+  virtual char get_sign() const;
   void live();
 
 protected:

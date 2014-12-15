@@ -20,13 +20,13 @@
 #include <thread>
 
 #include "table.h"
-#include "entity.h"
+#include "sheep.h"
 #include "painter.h"
 
 int main(){
   table field;
   for(int i=0; i<70; ++i){ //70
-    entity* ent=new entity(&field);
+    entity* ent=new sheep(&field);
     std::thread sheep(routine, ent);
     sheep.detach();
   }

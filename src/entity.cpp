@@ -17,7 +17,6 @@ entity::entity(table* grid):
                fertility(0) {
   unsigned seed = std::chrono::steady_clock::now().time_since_epoch().count();
   dre.seed(seed);
-  //srand((unsigned)time(NULL));
 }
 
 entity::~entity(){
@@ -39,35 +38,28 @@ entity::live() {
   die();
 }
 
-
 void
 entity::spawn() {
-  bool found;
   do {
     pos.set_random(dre);
     grid->claim(pos);
-    found = is_eatable( grid->get(pos) );
-    if (!found)
-      grid->unclaim(pos);
   }
-  while(!found); //is_eatable or/and unclaim as condition
+  while(!is_eatable( grid->get(pos) ) and
+    grid->unclaim(pos)); //not eatable than unclaim
   grid->settle(pos, this);
   grid->unclaim(pos);
 }
 
 bool
 entity::shift() {
-  bool found;
   position next;
   do {
     next = pos.get_close(dre);
     grid->claim(next);
-    found = is_eatable( grid->get(next) );
-    if (!found) {
-      grid->unclaim(next);
-    }
   }
-  while(!found); //is_eatable or/and unclaim as condition
+  while(!is_eatable( grid->get(next) ) and
+        grid->unclaim(next)); //not eatable than unclaim
+
   grid->claim(pos); //CHECK IF NOT DEAD
   grid->shift(pos, next);
   grid->unclaim(pos);
@@ -99,12 +91,6 @@ void routine(entity* ent) {
 }
 
 /*
-const bool
-entity::is_outside_box(pair<int,int> new_pos) const {
-  if((new_pos.first<0) or (new_pos.first>79)) return true;
-  if((new_pos.second<0) or (new_pos.second>24)) return true;
-  return false;
-}
 
 const pair<int,int>
 entity::choose_next_pos() const {

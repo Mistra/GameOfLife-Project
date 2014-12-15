@@ -10,12 +10,14 @@ table::table(){
       grid[j][i]=nullptr;
 }
 
-void table::claim(position pos){
+bool table::claim(position pos){
   mu_grid[pos.x][pos.y].lock();
+  return true;
 }
 
-void table::unclaim(position pos){
+bool table::unclaim(position pos){
   mu_grid[pos.x][pos.y].unlock();
+  return true;
 }
 
 entity*
@@ -40,12 +42,6 @@ table::shift(position one, position two) {
 
 
 /*
-
-bool table::inside(int x, int y){
-  if(x<0 or x>79) return false;
-  if(y<0 or y>24) return false;
-  return true;
-}
 
 bool table::look_around(std::pair<int,int> new_pos, char id){
   int x=new_pos.first;

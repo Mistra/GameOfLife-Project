@@ -10,8 +10,8 @@ class table{
 public:
   table();
   ~table(){}
-  void claim(position);
-  void unclaim(position);
+  bool claim(position);
+  bool unclaim(position);
   entity* get(int x, int y) const;
   entity* get(position) const;
   void settle(position, entity*);
