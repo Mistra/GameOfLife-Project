@@ -21,6 +21,7 @@
 
 #include "table.h"
 #include "sheep.h"
+#include "wolf.h"
 #include "painter.h"
 
 int main(){
@@ -30,6 +31,11 @@ int main(){
     entity* ent=new sheep(&field);
     std::thread sheep(routine, ent);
     sheep.detach();
+  }
+  for(int i=0; i<70; ++i){ //70
+    entity* ent=new wolf(&field);
+    std::thread wolf(routine, ent);
+    wolf.detach();
   }
 
   painter paint(&field);

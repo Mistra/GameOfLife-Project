@@ -28,11 +28,6 @@ entity::entity(table* grid, position pos):
 entity::~entity(){
 }
 
-char
-entity::get_sign() const{
-  return 'e';
-}
-
 void
 entity::live() {
   spawn();

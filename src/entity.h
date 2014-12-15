@@ -1,6 +1,8 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <thread>
+
 #include "table.h"
 #include "position.h"
 
@@ -15,7 +17,7 @@ public:
   bool operator==(entity& other) {
     return get_id() == other.get_id();
   }
-  virtual char get_sign() const;
+  virtual char get_sign() const =0;
   void live();
 
 protected:
@@ -27,7 +29,7 @@ protected:
 
 protected:
   bool i_was_killed();
-  bool is_eatable(entity*);
+  virtual bool is_eatable(entity*);
   bool similars_around();
 
 protected:
