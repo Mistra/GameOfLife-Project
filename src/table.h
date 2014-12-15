@@ -1,8 +1,7 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include <semaphore.h>
-#include "entity.h"
+#include <mutex>
 #include "position.h"
 
 class entity;
@@ -19,7 +18,7 @@ public:
   void shift(position one, position two);
 
 private:
-  sem_t sem_grid[80][25];
+  std::mutex mu_grid[80][25];
   entity* grid[80][25];
 };
 

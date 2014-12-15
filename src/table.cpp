@@ -1,24 +1,21 @@
-#include <iostream>
+//#include <iostream>
 #include "table.h"
+#include "entity.h"
 
 using namespace std;
-
-void table::claim(position pos){
-  sem_wait(&sem_grid[pos.x][pos.y]);
-}
-
-void table::unclaim(position pos){
-  sem_post(&sem_grid[pos.x][pos.y]);
-}
 
 table::table(){
   for(int i=0;i<25;++i)
     for(int j=0;j<80;++j)
-      sem_init(&sem_grid[j][i],0,1);
-
-  for(int i=0;i<25;++i)
-    for(int j=0;j<80;++j)
       grid[j][i]=nullptr;
+}
+
+void table::claim(position pos){
+  mu_grid[pos.x][pos.y].lock();
+}
+
+void table::unclaim(position pos){
+  mu_grid[pos.x][pos.y].unlock();
 }
 
 entity*
