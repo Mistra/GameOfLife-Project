@@ -2,54 +2,58 @@
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
-#include "common.h"
+#include "table.h"
 
 using namespace std;
 
-void resource::lock(int x, int y){
-  sem_wait(&sem_table[x][y]);
+void table::claim(position pos){
+  sem_wait(&sem_grid[pos.x][pos.y]);
 }
 
-void resource::unlock(int x, int y){
-  sem_post(&sem_table[x][y]);
+void table::unclaim(position pos){
+  sem_post(&sem_grid[pos.x][pos.y]);
 }
 
-resource::resource(){
+table::table(){
   for(int i=0;i<25;++i)
     for(int j=0;j<80;++j)
-      sem_init(&sem_table[j][i],0,1);
+      sem_init(&sem_grid[j][i],0,1);
 
   for(int i=0;i<25;++i)
     for(int j=0;j<80;++j)
-      table[j][i].first=' ';
+      grid[j][i]=nullptr;
+}
+
+entity*
+table::get(int x, int y) const{
+  return grid[x][y];
+}
+
+entity*
+table::get(position pos) const{
+  return grid[pos.x][pos.y];
+}
+
+void
+table::settle(position pos, entity* ent) {
+  grid[pos.x][pos.y] = ent;
+}
+void
+table::shift(position one, position two) {
+  grid[two.x][two.y] = grid[one.x][one.y];
+  grid[one.x][one.y] = nullptr;
 }
 
 
+/*
 
-std::pair<int,int> resource::get_random_pos(char id, entity* p_thread){
-    while(true){
-      int x=(rand()%80);
-      int y=(rand()%25);
-      lock(x,y);
-      if(table[x][y].first==' '){
-	table[x][y].first=id;
-	table[x][y].second=p_thread;
-	unlock(x,y);
-        pair <int,int> res=make_pair(x,y);
-	return res;
-      }
-      unlock(x,y);
-    }
-  }
-
-
-bool resource::inside(int x, int y){
+bool table::inside(int x, int y){
   if(x<0 or x>79) return false;
   if(y<0 or y>24) return false;
   return true;
 }
 
-bool resource::look_around(std::pair<int,int> new_pos, char id){
+bool table::look_around(std::pair<int,int> new_pos, char id){
   int x=new_pos.first;
   int y=new_pos.second;
   if(inside(x+1, y) and table[x+1][y].first==id) return true;
@@ -59,7 +63,7 @@ bool resource::look_around(std::pair<int,int> new_pos, char id){
   return false;
 }
 
-int resource::is_joinable(std::pair<int,int> new_pos, char id){
+int table::is_joinable(std::pair<int,int> new_pos, char id){
   int x=new_pos.first;
   int y=new_pos.second;
   if (!inside(x,y)) return 0;
@@ -68,29 +72,27 @@ int resource::is_joinable(std::pair<int,int> new_pos, char id){
   return 0;
 }
 
-bool resource::still_alive(std::pair<int, int> new_pos, entity* p_thread){
+bool table::still_alive(std::pair<int, int> new_pos, entity* p_thread){
   if(table[new_pos.first][new_pos.second].second==p_thread)
     return true;
   return false;
 }
 
 
-void resource::get_position(std::pair<int,int> new_pos, char id, entity* p_thread){
+void table::get_position(std::pair<int,int> new_pos, char id, entity* p_thread){
   table[new_pos.first][new_pos.second].first=id;
   table[new_pos.first][new_pos.second].second=p_thread;
 }
 
-  void resource::switch_position(std::pair<int,int> position, std::pair<int,int> new_pos, char id, entity* p_thread){
+void table::switch_position(std::pair<int,int> position, std::pair<int,int> new_pos, char id, entity* p_thread){
   table[position.first][position.second].first=' ';
   table[position.first][position.second].second=NULL;
   table[new_pos.first][new_pos.second].first=id;
   table[new_pos.first][new_pos.second].second=p_thread;
 }
 
-void resource::remove_me(int x, int y){
+void table::remove_me(int x, int y){
   table[x][y].first=' ';
 }
 
-char resource::get_sign(int x, int y) const{
-  return table[x][y].first;
-}
+*/

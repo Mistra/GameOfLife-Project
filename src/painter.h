@@ -1,13 +1,13 @@
 #ifndef PAINTER_HH
 #define PAINTER_HH
 
-class resource;
+class table;
 
 class painter {
 private:
-  const resource* const table;
+  const table* const grid;
 public:
-  painter(const resource* const table);
+  painter(const table* const grid);
   void show() const;
 };
 

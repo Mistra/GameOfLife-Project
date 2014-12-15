@@ -1,30 +1,106 @@
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
+#include <iostream>
+
 #include "entity.h"
 
 using namespace std;
 
-entity::entity(resource* res) {
-  position.first=-1;
-  position.second=-1;
-  my_res=res;
-  my_sem=res;
-  life_steps=30;
-  fertility=0;
+enum death_causes{
+  expired,
+  killed
+};
+
+entity::entity(table* grid):
+               grid(grid),
+               life_steps(3),
+               fertility(0) {
+  srand((unsigned)time(NULL));
 }
 
-entity::entity(pair<int,int> pos, resource* res) {
+/*entity::entity(pair<int,int> pos, resource* res) {
   my_res=res;
   my_sem=res;
   position=pos;
   life_steps=30;
   fertility=0;
-}
+}*/
 
 entity::~entity(){
 }
 
+char
+entity::get_sign() const{
+  return 'e';
+}
+
+void
+entity::live() {
+  spawn();
+  for (int i=0; i<life_steps; ++i) {
+    shift();
+    //reproduce
+    rest();
+  }
+  die();
+}
+
+
+void
+entity::spawn() {
+  bool found;
+  do {
+    pos.set_random();
+    grid->claim(pos);
+    found = is_eatable( grid->get(pos) );
+    if (!found)
+      grid->unclaim(pos);
+  }
+  while(!found); //is_eatable or/and unclaim as condition
+  grid->settle(pos, this);
+  grid->unclaim(pos);
+}
+
+bool
+entity::shift() {
+  bool found;
+  position next;
+  do {
+    next = pos.get_close();
+    grid->claim(next);
+    found = is_eatable( grid->get(next) );
+    if (!found) {
+      grid->unclaim(next);
+    }
+  }
+  while(!found); //is_eatable or/and unclaim as condition
+  grid->claim(pos); //CHECK IF NOT DEAD
+  //std::cout << "shifting from:" << x << " " << y << " to "<< x1 << " " << y1<< std::endl;
+  grid->shift(pos, next);
+  grid->unclaim(pos);
+  grid->unclaim(next);
+  pos = next;
+  return true;
+}
+
+void
+entity::rest() {
+  usleep(rand()%1900001+100000);
+}
+
+void
+entity::die() {
+  grid->settle(pos,nullptr);
+}
+
+bool
+entity::is_eatable(entity* other) {
+  if (other == nullptr) return true;
+  return false;
+}
+
+/*
 const bool
 entity::is_outside_box(pair<int,int> new_pos) const {
   if((new_pos.first<0) or (new_pos.first>79)) return true;
@@ -105,11 +181,10 @@ entity::body() {
     my_sem->unlock(position.first, position.second);
     ++fertility;
   }
-}
+}*/
 
 void routine(entity* ent) {
-  ent->set();
-  ent->body();
+  ent->live();
 }
 
 /*

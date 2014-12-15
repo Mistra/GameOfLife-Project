@@ -3,13 +3,14 @@
 #include <iostream>
 
 #include "painter.h"
-#include "common.h"
+#include "entity.h"
+#include "table.h"
 
 using std::cout;
 using std::endl;
 
-painter::painter(const resource* const table):
-table(table) {}
+painter::painter(const table* const grid):
+                 grid(grid) {}
 
 void painter::show() const {
   int n_threads = 0;
@@ -20,8 +21,13 @@ void painter::show() const {
     system("clear");
     for(int i=0;i<25;++i){
       for(int j=0;j<80;++j){
-        if (table->get_sign(j, i) != ' ') ++n_threads;
-        cout<<table->get_sign(j, i);
+        if (grid->get(j, i) == nullptr) {
+          cout<<" ";
+        }
+        else {
+          cout<<grid->get(j, i)->get_sign();
+          ++n_threads;
+        }
       }
       cout<<"|"<<endl;
     }

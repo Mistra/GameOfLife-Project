@@ -18,17 +18,17 @@
 
 //#include <iostream>
 #include <thread>
-#include "common.h"
+#include "table.h"
 #include "entity.h"
 #include "painter.h"
 
 int main(){
-  resource field;
+  table field;
 
-  for(int i=0; i<70; ++i){ //70
+  for(int i=0; i<1; ++i){ //70
     entity* ent=new entity(&field);
-    std::thread pro(routine, ent);
-    pro.detach();
+    std::thread sheep(routine, ent);
+    sheep.detach();
   }
   /*
   for(int i=0; i<200; ++i){

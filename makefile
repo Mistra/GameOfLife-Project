@@ -8,7 +8,7 @@ PROJECT_VERSION=1.1dev
 AUTHOR=Giulio Mistrangelo
 
 #Variables used to customize the output of the makefile:
-INPUT_FILES=main.cpp common.cpp entity.cpp painter.cpp
+INPUT_FILES=main.cpp table.cpp entity.cpp painter.cpp position.cpp
 #Source directory, default: src/ or leave blank
 S_DIR=src/ #src/common src/entity
 #Object directory, default: obj/ or leave blank
@@ -47,4 +47,3 @@ about:
 	@echo -e '\e[1;34m'Project: $(PROJECT)'\033[0m'
 	@echo -e '\e[1;34m'Version: $(PROJECT_VERSION)'\033[0m'
 	@echo -e '\e[1;34m'Author: $(AUTHOR)'\033[0m'
-

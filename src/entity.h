@@ -1,31 +1,36 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <utility>
-#include "common.h"
+#include "table.h"
+#include "position.h"
 
-class resource;
+class table;
 
 class entity{
 public:
-    entity(resource*);
-    entity(std::pair<int,int>, resource*);
-    ~entity();
+  entity(table*);
+//  entity(std::pair<int,int>, resource*);
+  ~entity();
 
-    void set();
-    void body();
+  char get_sign() const;
+  void live();
 
 protected:
-    const bool is_outside_box(std::pair<int,int> new_pos) const;
-    const std::pair<int,int> choose_next_pos() const;
+  void spawn();
+  bool shift();
+  void rest();
+  void die();
+
+protected:
+  bool is_eatable(entity*);
+//  const bool is_outside_box(std::pair<int,int> new_pos) const;
+//  const std::pair<int,int> choose_next_pos() const;
 
 private:
-    const bool is_ok() const; //used for debugging
-    std::pair<int,int> position;
-    int fertility;
-    int life_steps;
-    resource* my_sem;
-    resource* my_res;
+  table* grid;
+  position pos;
+  int life_steps;
+  int fertility;
 };
 
 void routine(entity* ent);
