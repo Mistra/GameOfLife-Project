@@ -19,7 +19,12 @@ void painter::show() const {
     std::chrono::milliseconds dura(100);
     std::this_thread::sleep_for( dura );
     system("clear");
+    for(int i = 0; i < 82; ++i) {
+      cout<<"*";
+    }
+    cout<<endl;
     for(int i=0;i<25;++i){
+      cout<<"*";
       for(int j=0;j<80;++j){
         if (grid->get(j, i) == nullptr) {
           cout<<" ";
@@ -29,10 +34,10 @@ void painter::show() const {
           ++n_threads;
         }
       }
-      cout<<"|"<<endl;
+      cout<<"*"<<endl;
     }
-    for(int i = 0; i < 80; ++i) {
-      cout<<"_";
+    for(int i = 0; i < 82; ++i) {
+      cout<<"*";
     }
     cout<<endl;
     cout<<"N. threads: "<<n_threads<<endl;

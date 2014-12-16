@@ -28,10 +28,10 @@ OBJ=$(addprefix $(O_DIR), $(INPUT_FILES:.cpp=.o))
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	@echo -e '\e[1;34m'linking: $(notdir $^) to $(notdir $@)'\033[0m'
+	@echo -e '\e[1;33m'linking: $(notdir $^) to $(notdir $@)'\033[0m'
 	@mkdir -p $(E_DIR)
 	@$(CC) -o $(E_DIR)$@ $^ $(LDFLAGS)
-	@echo -e '\e[1;31m'make: all done'\033[0m'
+	@echo -e '\e[1;32m'make: all done'\033[0m'
 
 $(O_DIR)%.o : %.cpp
 	@echo -e '\e[1;34m'compiling: $(notdir $<)'\033[0m'
@@ -41,7 +41,7 @@ $(O_DIR)%.o : %.cpp
 ## Clean Rule
 clean:
 	@-rm -fr $(E_DIR) $(O_DIR)
-	@echo -e '\e[1;34m'Cleared'\033[0m'
+	@echo -e '\e[1;35m'Cleared'\033[0m'
 
 about:
 	@echo -e '\e[1;34m'Project: $(PROJECT)'\033[0m'

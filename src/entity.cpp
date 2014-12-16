@@ -56,6 +56,7 @@ entity::spawn() {
     do {
       next = pos.get_close(dre);
       grid->claim(next);
+      rest(100);
     }
     while(!is_eatable( grid->get(next) ) and
       grid->unclaim(next));
@@ -71,6 +72,7 @@ entity::shift() {
   do {
     next = pos.get_close(dre);
     grid->claim(next);
+    rest(100);
   }
   while(!is_eatable( grid->get(next) ) and
         grid->unclaim(next)); //not eatable than unclaim
@@ -86,6 +88,12 @@ void
 entity::rest() {
   u_dice dice(1, 20);
   milliseconds ms(dice(dre)*100);
+  sleep_for (ms);
+}
+
+void
+entity::rest(int time) {
+  milliseconds ms(time);
   sleep_for (ms);
 }
 

@@ -25,6 +25,7 @@ protected:
   void shift();
   virtual void reproduce()=0;
   void rest();
+  void rest(int);
   void die();
 
 protected:

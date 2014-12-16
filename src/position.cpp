@@ -1,19 +1,26 @@
-#include <chrono>
-#include <thread>
-
 #include "position.h"
 
 position::position():
                   dice4(0,3),
                   dice25(0,24),
                   dice80(0,79){
-
 }
 
 position::position(int x, int y):
                    position(){
   position::x = x;
   position::y = y;
+}
+
+position
+position::get_direction(pole n) {
+  switch(n){
+    case north: return position(x, y+1);
+    case east: return position(x+1, y);
+    case south: return position(x, y-1);
+    case west: return position(x-1, y);
+    default: throw "polo impossibile";
+  }
 }
 
 void
@@ -24,34 +31,24 @@ position::set_random(std::default_random_engine &dre) {
 
 position
 position::get_close(std::default_random_engine &dre){
-  int x1 = x;
-  int y1 = y;
-  do {
-    x1 = x;
-    y1 = y;
-    switch(dice4(dre)){ //0=N, 1=E, 2=S, 3=W
-      case 0: y1 = y+1; break;
-      case 1: x1 = x+1; break;
-      case 2: y1 = y-1; break;
-      case 3: x1 = x-1; break;
-    }
-  }
-  while(is_outside(x1, y1));
-  return position(x1, y1);
+  position next;
+  do next = get_direction(dice4(dre));
+  while (next.is_outside());
+  return next;
 }
 
 std::vector<position>
 position::pos_around() {
   std::vector<position> vec;
-  if (!is_outside(x+1,y) ) vec.push_back(position(x+1,y));
-  if (!is_outside(x-1,y) ) vec.push_back(position(x-1,y));
-  if (!is_outside(x,y+1) ) vec.push_back(position(x,y+1));
-  if (!is_outside(x,y-1) ) vec.push_back(position(x,y-1));
+  for(int i=0; i<4; i++) {
+    if(!get_direction(i).is_outside())
+      vec.push_back(get_direction(i));
+  }
   return vec;
 }
 
 bool
-position::is_outside(int x, int y){
+position::is_outside() {
   if((x<0) or (x>79)) return true;
   if((y<0) or (y>24)) return true;
   return false;

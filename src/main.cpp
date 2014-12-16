@@ -27,14 +27,14 @@
 int main(){
 
   table field;
-
+/*
   for(int i=0; i<30; ++i){ //70
     entity* ent=new wolf(&field);
     std::thread wolf(routine, ent);
     wolf.detach();
-  }
+  }*/
 
-  for(int i=0; i<100; ++i){ //70
+  for(int i=0; i<150; ++i){ //70
     entity* ent=new sheep(&field);
     std::thread sheep(routine, ent);
     sheep.detach();
