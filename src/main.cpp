@@ -1,5 +1,5 @@
 //Game of Life, Universitay educational project
-//Copyright (C) 2011 os-project-game-of-life projet owners
+//Copyright (C) 2014 Giulio Mistrangelo
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -27,15 +27,17 @@
 int main(){
 
   table field;
-  for(int i=0; i<70; ++i){ //70
-    entity* ent=new sheep(&field);
-    std::thread sheep(routine, ent);
-    sheep.detach();
-  }
-  for(int i=0; i<70; ++i){ //70
+
+  for(int i=0; i<30; ++i){ //70
     entity* ent=new wolf(&field);
     std::thread wolf(routine, ent);
     wolf.detach();
+  }
+
+  for(int i=0; i<100; ++i){ //70
+    entity* ent=new sheep(&field);
+    std::thread sheep(routine, ent);
+    sheep.detach();
   }
 
   painter paint(&field);
