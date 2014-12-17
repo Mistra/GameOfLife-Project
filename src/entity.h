@@ -14,38 +14,30 @@ public:
   entity(table*, position);
   virtual ~entity();
 
-  bool operator==(entity& other) {
-    return get_id() == other.get_id();
-  }
+  virtual void operator()();
   virtual char get_sign() const =0;
-  void live();
 
 protected:
   void spawn();
   void shift();
   virtual void reproduce()=0;
-  void rest();
-  void rest(int);
+  void rest(int time = 0);
   void die();
 
-protected:
+  void claim_pos();
+  void unclaim_pos();
   bool i_was_killed();
   virtual bool is_eatable(entity*);
   bool similars_around();
 
-protected:
-  std::thread::id get_id() {
-    return std::this_thread::get_id();
-  }
-
-  std::default_random_engine dre;
   table* grid;
   position pos;
   int life_steps;
   int fertility;
   bool r_spawn;
-};
 
-void routine(entity* ent);
+private:
+  std::default_random_engine dre;
+};
 
 #endif

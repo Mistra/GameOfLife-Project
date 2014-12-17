@@ -17,10 +17,11 @@ sheep::get_sign() const{
 void
 sheep::reproduce() {
   ++fertility;
-  if (fertility < 15) return;
+  if (fertility < 10) return;
   if (!similars_around() ) return;
-  entity* ent=new sheep(grid, pos); //POS
-  std::thread sheep(routine, ent);
+
+  sheep sp(grid);
+  std::thread sheep(sp);
   sheep.detach();
   fertility = 0;
 }

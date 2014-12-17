@@ -19,8 +19,8 @@ wolf::reproduce() {
   ++fertility;
   if (fertility < 15) return;
   if (!similars_around() ) return;
-  entity* ent=new wolf(grid, pos); //POS
-  std::thread wolf(routine, ent);
+  wolf wf(grid, pos); //POS
+  std::thread wolf(wf);
   wolf.detach();
   fertility = 0;
 }

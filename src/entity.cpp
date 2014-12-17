@@ -29,7 +29,7 @@ entity::~entity(){
 }
 
 void
-entity::live() {
+entity::operator()() {
   spawn();
   for (int i=0; i<life_steps; --life_steps) {
     shift();
@@ -47,6 +47,7 @@ entity::spawn() {
     do {
       pos.set_random(dre);
       grid->claim(pos);
+      rest(100);
     }
     while(!is_eatable( grid->get(pos) ) and
       grid->unclaim(pos));
@@ -69,14 +70,13 @@ entity::spawn() {
 void
 entity::shift() {
   position next;
-  do {
+  while (true) {
     next = pos.get_close(dre);
     grid->claim(next);
+    if (is_eatable( grid->get(next) )) break;
+    grid->unclaim(next);
     rest(100);
   }
-  while(!is_eatable( grid->get(next) ) and
-        grid->unclaim(next)); //not eatable than unclaim
-
   grid->claim(pos);
   if (!i_was_killed()) grid->shift(pos, next);
   grid->unclaim(pos);
@@ -85,16 +85,12 @@ entity::shift() {
 }
 
 void
-entity::rest() {
-  u_dice dice(1, 20);
-  milliseconds ms(dice(dre)*100);
-  sleep_for (ms);
-}
-
-void
 entity::rest(int time) {
-  milliseconds ms(time);
-  sleep_for (ms);
+  if (time == 0) {
+    u_dice dice(100, 2000);
+    time = dice(dre);
+  }
+  sleep_for (milliseconds(time));
 }
 
 void
@@ -106,15 +102,15 @@ entity::die() {
 }
 
 /*** HELPERS ***/
+void
+entity::claim_pos() {
+
+}
 
 bool
 entity::i_was_killed() {
-  if (grid->get(pos) == nullptr or
-    !(*grid->get(pos) == *this) ) {
-    life_steps=0;
-    return true;
-  }
-  return false;
+  if (grid->get(pos) != this) return true;
+  else return false;
 }
 
 bool
@@ -134,10 +130,4 @@ bool
 entity::is_eatable(entity* other) {
   if (other == nullptr) return true;
   return false;
-}
-
-/*** EXTERN ***/
-
-void routine(entity* ent) {
-  ent->live();
 }

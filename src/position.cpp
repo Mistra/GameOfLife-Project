@@ -1,5 +1,7 @@
 #include "position.h"
 
+enum poles {north,east,south,west};
+
 position::position():
                   dice4(0,3),
                   dice25(0,24),
@@ -13,7 +15,7 @@ position::position(int x, int y):
 }
 
 position
-position::get_direction(pole n) {
+position::get_direction(int n) {
   switch(n){
     case north: return position(x, y+1);
     case east: return position(x+1, y);
@@ -33,7 +35,7 @@ position
 position::get_close(std::default_random_engine &dre){
   position next;
   do next = get_direction(dice4(dre));
-  while (next.is_outside());
+  while (!next.is_inside());
   return next;
 }
 
@@ -41,15 +43,15 @@ std::vector<position>
 position::pos_around() {
   std::vector<position> vec;
   for(int i=0; i<4; i++) {
-    if(!get_direction(i).is_outside())
+    if(get_direction(i).is_inside())
       vec.push_back(get_direction(i));
   }
   return vec;
 }
 
 bool
-position::is_outside() {
-  if((x<0) or (x>79)) return true;
-  if((y<0) or (y>24)) return true;
-  return false;
+position::is_inside() {
+  if( (x<0) or (x>79) or
+      (y<0) or (y>24)) return false;
+  return true;
 }
