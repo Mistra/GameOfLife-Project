@@ -14,8 +14,8 @@ public:
   entity* get(int x, int y) const;
   entity* get(position) const;
   bool set(position, entity*);
-  bool shift(position from, position to);
-  bool erase(position);
+  bool shift(position from, position to, entity*);
+  bool erase(position, entity*);
 
 private:
   entity* grid[2000];

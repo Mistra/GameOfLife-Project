@@ -17,6 +17,7 @@ entity::entity(table* grid):
   unsigned seed = steady_clock::now().time_since_epoch().count();
   dre.seed(seed);
   r_spawn = true;
+  killed = false;
 }
 
 entity::entity(table* grid, position pos):
@@ -49,8 +50,8 @@ entity::spawn() {
     else next = pos.get_close(dre);
     if ( grid->set(next, this) ) break;
     rest(100);
-    pos = next;
   }
+  pos = next;
 }
 
 void
@@ -58,7 +59,7 @@ entity::shift() {
   position next;
   while (true) {
     next = pos.get_close(dre);
-    if(grid->shift(pos, next)) break;
+    if(grid->shift(pos, next, this)) break;
     rest(100);
   }
   pos = next;
@@ -75,18 +76,17 @@ entity::rest(int time) {
 
 void
 entity::die() {
-  //grid->claim(pos);
-  //if (!i_was_killed())
-  grid->erase(pos);
-  //grid->unclaim(pos);
+  grid->erase(pos, this);
 }
 
 /*** HELPERS ***/
 
 bool
-entity::i_was_killed() {
+entity::is_killed() {
+  if (killed) return true;
   if (grid->get(pos) != this){
     life_steps = 0;
+    killed = true;
     return true;
   }
   else return false;

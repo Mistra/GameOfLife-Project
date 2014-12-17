@@ -11,7 +11,7 @@ public:
 protected:
   void reproduce();
   char get_sign() const;
-  bool is_eatable(entity*);
+  bool can_eat(entity*);
 };
 
 #endif

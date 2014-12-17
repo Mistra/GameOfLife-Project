@@ -16,18 +16,22 @@ wolf::get_sign() const{
 
 void
 wolf::reproduce() {
-  ++fertility;
-  if (fertility < 15) return;
+  //++fertility;
+  if (fertility < 1) return;
   if (!similars_around() ) return;
-  wolf wf(grid, pos); //POS
+
+  wolf wf(grid, pos);
   std::thread wolf(wf);
   wolf.detach();
-  fertility = 0;
+  fertility -= 1;
 }
 
 bool
-wolf::is_eatable(entity* other) {
-  if (other == nullptr or
-      other->get_sign() != get_sign()) return true;
+wolf::can_eat(entity* other) {
+  if (other == nullptr) return true;
+  if (other->get_sign() != get_sign()){
+    ++fertility;
+    return true;
+  }
   return false;
 }

@@ -17,6 +17,7 @@ public:
   virtual void operator()();
   virtual char get_sign() const =0;
   virtual bool can_eat(entity*);
+  bool is_killed();
 
 protected:
   void spawn();
@@ -27,7 +28,6 @@ protected:
 
   void claim_pos();
   void unclaim_pos();
-  bool i_was_killed();
   bool similars_around();
 
   table* grid;
@@ -35,6 +35,7 @@ protected:
   int life_steps;
   int fertility;
   bool r_spawn;
+  bool killed;
 
 private:
   std::default_random_engine dre;
