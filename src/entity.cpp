@@ -109,7 +109,10 @@ entity::claim_pos() {
 
 bool
 entity::i_was_killed() {
-  if (grid->get(pos) != this) return true;
+  if (grid->get(pos) != this){
+    life_steps = 0;
+    return true;
+  }
   else return false;
 }
 
