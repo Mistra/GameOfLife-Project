@@ -16,6 +16,7 @@ public:
 
   virtual void operator()();
   virtual char get_sign() const =0;
+  virtual bool can_eat(entity*);
 
 protected:
   void spawn();
@@ -27,7 +28,6 @@ protected:
   void claim_pos();
   void unclaim_pos();
   bool i_was_killed();
-  virtual bool is_eatable(entity*);
   bool similars_around();
 
   table* grid;

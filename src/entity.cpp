@@ -43,28 +43,14 @@ entity::operator()() {
 
 void
 entity::spawn() {
-  if (r_spawn) {
-    do {
-      pos.set_random(dre);
-      grid->claim(pos);
-      rest(100);
-    }
-    while(!is_eatable( grid->get(pos) ) and
-      grid->unclaim(pos));
-  }
-  else {
-    position next;
-    do {
-      next = pos.get_close(dre);
-      grid->claim(next);
-      rest(100);
-    }
-    while(!is_eatable( grid->get(next) ) and
-      grid->unclaim(next));
+  position next;
+  while (true) {
+    if (r_spawn) next = pos.set_random(dre);
+    else next = pos.get_close(dre);
+    if ( grid->set(next, this) ) break;
+    rest(100);
     pos = next;
   }
-  grid->settle(pos, this);
-  grid->unclaim(pos);
 }
 
 void
@@ -72,15 +58,9 @@ entity::shift() {
   position next;
   while (true) {
     next = pos.get_close(dre);
-    grid->claim(next);
-    if (is_eatable( grid->get(next) )) break;
-    grid->unclaim(next);
+    if(grid->shift(pos, next)) break;
     rest(100);
   }
-  grid->claim(pos);
-  if (!i_was_killed()) grid->shift(pos, next);
-  grid->unclaim(pos);
-  grid->unclaim(next);
   pos = next;
 }
 
@@ -95,17 +75,13 @@ entity::rest(int time) {
 
 void
 entity::die() {
-  grid->claim(pos);
-  if (!i_was_killed())
-    grid->settle(pos,nullptr);
-  grid->unclaim(pos);
+  //grid->claim(pos);
+  //if (!i_was_killed())
+  grid->erase(pos);
+  //grid->unclaim(pos);
 }
 
 /*** HELPERS ***/
-void
-entity::claim_pos() {
-
-}
 
 bool
 entity::i_was_killed() {
@@ -130,7 +106,7 @@ entity::similars_around(){
 }
 
 bool
-entity::is_eatable(entity* other) {
+entity::can_eat(entity* other) {
   if (other == nullptr) return true;
   return false;
 }

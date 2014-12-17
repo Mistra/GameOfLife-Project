@@ -10,16 +10,16 @@ class table{
 public:
   table();
   ~table(){}
-  bool claim(position);
-  bool unclaim(position);
+
   entity* get(int x, int y) const;
   entity* get(position) const;
-  void settle(position, entity*);
-  void shift(position one, position two);
+  bool set(position, entity*);
+  bool shift(position from, position to);
+  bool erase(position);
 
 private:
-  std::mutex mu_grid[80][25];
-  entity* grid[80][25];
+  entity* grid[2000];
+  std::mutex mu_grid[2000];
 };
 
 #endif //COMMON_H

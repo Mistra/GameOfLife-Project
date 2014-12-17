@@ -17,7 +17,7 @@ sheep::get_sign() const{
 void
 sheep::reproduce() {
   ++fertility;
-  if (fertility < 10) return;
+  if (fertility < 18) return;
   if (!similars_around() ) return;
 
   sheep sp(grid);

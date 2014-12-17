@@ -1,41 +1,45 @@
 //#include <iostream>
+#include <algorithm>
 #include "table.h"
 #include "entity.h"
 
 using namespace std;
-
-table::table(){
-  for(int i=0;i<25;++i)
-    for(int j=0;j<80;++j)
-      grid[j][i]=nullptr;
-}
-
-bool table::claim(position pos){
-  mu_grid[pos.x][pos.y].lock();
-  return true;
-}
-
-bool table::unclaim(position pos){
-  mu_grid[pos.x][pos.y].unlock();
-  return true;
-}
-
-entity*
-table::get(int x, int y) const{
-  return grid[x][y];
-}
+table::table(): grid{nullptr}{}
 
 entity*
 table::get(position pos) const{
-  return grid[pos.x][pos.y];
+  return grid[pos];
 }
 
-void
-table::settle(position pos, entity* ent) {
-  grid[pos.x][pos.y] = ent;
+bool
+table::set(position pos, entity* ent) {
+  if ( ent->can_eat(grid[pos]) ) {
+    std::unique_lock<mutex> locker(mu_grid[pos]);
+    grid[pos] = ent;
+    return true;
+  }
+  return false;
 }
-void
+
+bool
 table::shift(position one, position two) {
-  grid[two.x][two.y] = grid[one.x][one.y];
-  grid[one.x][one.y] = nullptr;
+  int s1 = one;
+  int s2 = two;
+  if (s1 > s2) std::swap(s1, s2);
+  std::unique_lock<mutex> locker(mu_grid[s1]);
+  std::unique_lock<mutex> locker2(mu_grid[s2]);
+  if ( grid[one]->can_eat(grid[two]) ) {
+  //if (grid[two] == nullptr) {
+    grid[two] = grid[one];
+    grid[one] = nullptr;
+    return true;
+  }
+  return false;
+}
+
+bool
+table::erase(position pos) {
+  std::unique_lock<mutex> locker(mu_grid[pos]);
+  grid[pos] = nullptr;
+  return true;
 }

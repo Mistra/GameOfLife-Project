@@ -25,10 +25,11 @@ position::get_direction(int n) {
   }
 }
 
-void
+position
 position::set_random(std::default_random_engine &dre) {
   x=dice80(dre);
   y=dice25(dre);
+  return *this;
 }
 
 position

@@ -27,14 +27,15 @@
 int main(){
 
   table field;
-
+/*
   for(int i=0; i<30; ++i){ //70
     wolf wf(&field);
     std::thread wolf( wf );
     wolf.detach();
   }
+*/
 
-  for(int i=0; i<150; ++i){ //70
+  for(int i=0; i<100; ++i){ //70
     sheep sp(&field);
     std::thread sheep( sp );
     sheep.detach();

@@ -10,7 +10,9 @@ public:
   position();
   position(int x, int y);
 
-  void set_random(std::default_random_engine &dre);
+  operator int() { return x+y*80; }
+
+  position set_random(std::default_random_engine &dre);
   position get_direction(int);
   position get_close(std::default_random_engine &dre);
   std::vector<position> pos_around();
