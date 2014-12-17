@@ -3,10 +3,12 @@
 
 wolf::wolf(table* grid):
 entity(grid){
+  life_steps=18;
 }
 
 wolf::wolf(table* grid, position pos):
 entity(grid, pos){
+  life_steps=18;
 }
 
 char
@@ -16,7 +18,6 @@ wolf::get_sign() const{
 
 void
 wolf::reproduce() {
-  //++fertility;
   if (fertility < 1) return;
   if (!similars_around() ) return;
 
