@@ -96,10 +96,9 @@ bool
 entity::similars_around(){
   std::vector<position> vec = pos.pos_around();
   for(unsigned i = 0; i < vec.size(); ++i) {
-    if(!( grid->get(vec[i]) == nullptr )) {
-      if( grid->get(vec[i])->get_sign()  ==
-        get_sign() )
-        return true;
+    if(grid->get(vec[i]) != nullptr and
+       grid->get(vec[i])->get_sign() == get_sign() ) {
+      return true;
     }
   }
   return false;

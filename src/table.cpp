@@ -13,8 +13,8 @@ table::get(position pos) const{
 
 bool
 table::set(position pos, entity* ent) {
+  std::unique_lock<mutex> locker(mu_grid[pos]);
   if ( ent->can_eat(grid[pos]) ) {
-    std::unique_lock<mutex> locker(mu_grid[pos]);
     grid[pos] = ent;
     return true;
   }
