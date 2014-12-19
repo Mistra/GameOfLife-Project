@@ -18,10 +18,9 @@ settings::get(std::string key) {
 settings::settings() {
   std::lock_guard<std::mutex> locker(mu);
   std::ifstream cin ("settings.conf", std::ifstream::in);
+  std::string key;
+  int value;
   do{
-    std::string key;
-    int value;
-
     getline(cin, key, ':');
     cin>>value;
     store[key]=value;

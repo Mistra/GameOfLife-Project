@@ -37,7 +37,7 @@ entity::operator()() {
     rest();
   }
   die();
-  rest(1000);
+  rest(1000);//last to be painted
 }
 
 /*** PROTECTED ***/

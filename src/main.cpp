@@ -27,8 +27,7 @@
 
 int main(){
 
-  //std::cout<<settings::get().get("coming")<<std::endl;
-  //std::cout<<settings::get("base")<<std::endl;
+  std::cout<<settings::get("base")<<std::endl;
 
   table field;
 
