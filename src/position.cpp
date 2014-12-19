@@ -1,11 +1,14 @@
 #include "position.h"
+#include "settings.h"
 
 enum poles {north,east,south,west};
 
 position::position():
+                  base(settings::get("base")),
+                  height(settings::get("height")),
                   dice4(0,3),
-                  dice25(0,24),
-                  dice80(0,79){
+                  dice25(0,height - 1),
+                  dice80(0,base - 1){
 }
 
 position::position(int x, int y):
@@ -43,7 +46,7 @@ position::get_close(std::default_random_engine &dre){
 std::vector<position>
 position::pos_around() {
   std::vector<position> vec;
-  for(int i=0; i<4; i++) {
+  for(int i=0; i<4; ++i) {
     if(get_direction(i).is_inside())
       vec.push_back(get_direction(i));
   }
@@ -52,7 +55,7 @@ position::pos_around() {
 
 bool
 position::is_inside() {
-  if( (x<0) or (x>79) or
-      (y<0) or (y>24)) return false;
+  if( (x<0) or (x > base - 1) or
+      (y<0) or (y > height - 1)) return false;
   return true;
 }

@@ -23,19 +23,23 @@
 #include "sheep.h"
 #include "wolf.h"
 #include "painter.h"
+#include "settings.h"
 
 int main(){
 
+  //std::cout<<settings::get().get("coming")<<std::endl;
+  //std::cout<<settings::get("base")<<std::endl;
+
   table field;
 
-  for(int i=0; i<100; ++i){ //70
+  for(int i=0; i<settings::get("wolfs"); ++i){ //70
     wolf wf(&field);
     std::thread wolf( wf );
     wolf.detach();
   }
 
 
-  for(int i=0; i<100; ++i){ //70
+  for(int i=0; i<settings::get("sheeps"); ++i){ //70
     sheep sp(&field);
     std::thread sheep( sp );
     sheep.detach();
@@ -43,5 +47,6 @@ int main(){
 
   painter paint(&field);
   paint.show();
+
   return 0;
 }

@@ -1,14 +1,17 @@
 #include "wolf.h"
 #include <thread>
+#include "settings.h"
 
 wolf::wolf(table* grid):
 entity(grid){
-  life_steps=18;
+  life_steps = settings::get("wolf_life");
+  rate = settings::get("wolf_rate");
 }
 
 wolf::wolf(table* grid, position pos):
 entity(grid, pos){
-  life_steps=18;
+  life_steps = settings::get("wolf_life");
+  rate = settings::get("wolf_rate");
 }
 
 char
@@ -18,13 +21,13 @@ wolf::get_sign() const{
 
 void
 wolf::reproduce() {
-  if (fertility < 1) return;
+  if (fertility < rate) return;
   if (!similars_around() ) return;
 
   wolf wf(grid, pos);
   std::thread wolf(wf);
   wolf.detach();
-  fertility -= 1;
+  fertility -= rate;
 }
 
 bool

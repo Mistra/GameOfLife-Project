@@ -17,7 +17,6 @@ entity::entity(table* grid):
   unsigned seed = steady_clock::now().time_since_epoch().count();
   dre.seed(seed);
   r_spawn = true;
-  killed = false;
 }
 
 entity::entity(table* grid, position pos):
@@ -38,6 +37,7 @@ entity::operator()() {
     rest();
   }
   die();
+  rest(1000);
 }
 
 /*** PROTECTED ***/
@@ -66,12 +66,12 @@ entity::shift() {
 }
 
 void
-entity::rest(int time) {
-  if (time == 0) {
+entity::rest(int ms) {
+  if (ms == 0) {
     u_dice dice(100, 2000);
-    time = dice(dre);
+    ms = dice(dre);
   }
-  sleep_for (milliseconds(time));
+  sleep_for (milliseconds(ms));
 }
 
 void
@@ -83,10 +83,8 @@ entity::die() {
 
 bool
 entity::is_killed() {
-  if (killed) return true;
   if (grid->get(pos) != this){
     life_steps = 0;
-    killed = true;
     return true;
   }
   else return false;

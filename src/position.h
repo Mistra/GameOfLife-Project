@@ -10,7 +10,7 @@ public:
   position();
   position(int x, int y);
 
-  operator int() { return x+y*80; }
+  operator int() { return x+y*base; }
 
   position set_random(std::default_random_engine &dre);
   position get_direction(int);
@@ -20,6 +20,8 @@ public:
   int x, y;
 
 private:
+
+  int base, height;
   bool is_inside();
   std::uniform_int_distribution<int> dice4, dice25, dice80;
 };

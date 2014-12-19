@@ -8,7 +8,7 @@ PROJECT_VERSION=1.1dev
 AUTHOR=Giulio Mistrangelo
 
 #Variables used to customize the output of the makefile:
-INPUT_FILES=main.cpp table.cpp entity.cpp painter.cpp position.cpp sheep.cpp wolf.cpp
+INPUT_FILES=main.cpp table.cpp entity.cpp painter.cpp position.cpp sheep.cpp wolf.cpp settings.cpp
 #Source directory, default: src/ or leave blank
 S_DIR=src/ #src/common src/entity
 #Object directory, default: obj/ or leave blank
@@ -19,7 +19,7 @@ E_DIR=bin/
 TARGET=project
 
 CC=g++
-CFLAGS=-c -Wall -std=c++11 #-D NDEBUG
+CFLAGS=-c -Wall -std=c++11 -g #-D NDEBUG
 LDFLAGS=-lpthread
 SOURCE=$(addprefix $(S_DIR), $(INPUT_FILES))
 VPATH=$(S_DIR)

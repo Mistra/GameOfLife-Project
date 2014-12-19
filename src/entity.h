@@ -35,8 +35,7 @@ protected:
   int life_steps;
   int fertility;
   bool r_spawn;
-  bool killed;
-
+  int rate; //reproduction rate
 private:
   std::default_random_engine dre;
 };

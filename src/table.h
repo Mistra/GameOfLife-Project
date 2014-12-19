@@ -2,6 +2,7 @@
 #define TABLE_H
 
 #include <mutex>
+#include <vector>
 #include "position.h"
 
 class entity;
@@ -9,7 +10,7 @@ class entity;
 class table{
 public:
   table();
-  ~table(){}
+  ~table();
 
   entity* get(int x, int y) const;
   entity* get(position) const;
@@ -18,8 +19,8 @@ public:
   bool erase(position, entity*);
 
 private:
-  entity* grid[2000];
-  std::mutex mu_grid[2000];
+  entity** grid;
+  std::mutex* mu_grid;
 };
 
 #endif //COMMON_H

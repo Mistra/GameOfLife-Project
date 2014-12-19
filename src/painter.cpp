@@ -5,6 +5,7 @@
 #include "painter.h"
 #include "entity.h"
 #include "table.h"
+#include "settings.h"
 
 using std::cout;
 using std::endl;
@@ -24,21 +25,22 @@ void painter::show() const {
     std::chrono::milliseconds dura(100);
     std::this_thread::sleep_for( dura );
     system("clear");
-    for(int i = 0; i < 82; ++i) {
+    for(int i = 0; i < settings::get("base")+2; ++i) {
       cout<<"*";
     }
     cout<<endl;
-    for(int i=0;i<25;++i){
+    for(int i=0;i<settings::get("height");++i){
       cout<<"*";
-      for(int j=0;j<80;++j){
-        if (grid->get(position(j, i)) == nullptr) {
+      for(int j=0;j<settings::get("base");++j){
+        entity* ent = grid->get(position(j, i));
+        if (ent == nullptr) {
           cout<<" ";
         }
         else {
-          cout<<grid->get(position(j, i))->get_sign();
+          cout<<ent->get_sign();
           ++n_threads;
 
-          if (grid->get(position(j, i))->get_sign() == 's') {
+          if (ent->get_sign() == 's') {
             ++n_sheeps;
           }
           else
@@ -47,7 +49,7 @@ void painter::show() const {
       }
       cout<<"*"<<endl;
     }
-    for(int i = 0; i < 82; ++i) {
+    for(int i = 0; i < settings::get("base")+2; ++i) {
       cout<<"*";
     }
     cout<<endl;
