@@ -1,8 +1,9 @@
 #ifndef POSITION_HH
 #define POSITION_HH
 
-#include <random>
 #include <vector>
+
+enum poles {north,east,south,west};
 
 class position {
 
@@ -10,20 +11,17 @@ public:
   position();
   position(int x, int y);
 
-  operator int() { return x+y*base; }
-
-  position set_random(std::default_random_engine &dre);
-  position get_direction(int);
-  position get_close(std::default_random_engine &dre);
-  std::vector<position> pos_around();
-
+  operator int();
+  std::vector<position> horizon(int hrz_line);
   int x, y;
 
 private:
+  position get_direction(int);
+  bool is_ok();
 
   int base, height;
   bool is_inside();
-  std::uniform_int_distribution<int> dice4, dice25, dice80;
+
 };
 
 #endif

@@ -2,27 +2,30 @@
 //std::cout<<"REPRODUCE!!!!"<<std::endl;
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 #include "entity.h"
+#include "settings.h"
 
 using std::this_thread::sleep_for;
 using std::chrono::milliseconds;
 using std::chrono::steady_clock;
-typedef std::uniform_int_distribution<int> u_dice;
 
 entity::entity(table* grid):
                grid(grid),
                life_steps(30),
-               fertility(0) {
+               fertility(0),
+               rest_dice(100, 2000),
+               base_dice(0, settings::get("base") - 1),
+               height_dice(0, settings::get("height") - 1){
   unsigned seed = steady_clock::now().time_since_epoch().count();
   dre.seed(seed);
-  r_spawn = true;
+  pos = position(base_dice(dre), height_dice(dre));
 }
 
-entity::entity(table* grid, position pos):
+entity::entity(table* grid, position p1):
                entity(grid){
-  entity::pos = pos;
-  r_spawn = false;
+  pos = p1;
 }
 
 entity::~entity(){
@@ -34,10 +37,10 @@ entity::operator()() {
   for (int i=0; i<life_steps; --life_steps) {
     shift();
     reproduce();
-    rest();
+    sleep_for (milliseconds (rest_dice(dre) ));
   }
-  die();
-  rest(1000);//last to be painted
+  grid->erase(pos, this);
+  sleep_for (milliseconds (1000));//last to be painted
 }
 
 /*** PROTECTED ***/
@@ -45,11 +48,13 @@ entity::operator()() {
 void
 entity::spawn() {
   position next;
+  std::vector<position> places = pos.horizon(1);
   while (true) {
-    if (r_spawn) next = pos.set_random(dre);
-    else next = pos.get_close(dre);
+    std::shuffle(std::begin(places), std::end(places), dre);
+    //if (r_spawn) next = position(base_dice(dre), height_dice(dre));
+    next = places[0]; //else
     if ( grid->set(next, this) ) break;
-    rest(100);
+    sleep_for (milliseconds (100));
   }
   pos = next;
 }
@@ -57,26 +62,15 @@ entity::spawn() {
 void
 entity::shift() {
   position next;
+  std::vector<position> places = pos.horizon(1);
   while (true) {
-    next = pos.get_close(dre);
+    std::shuffle(std::begin(places), std::end(places), dre);
+    //next = pos.get_close(dre);
+    next = places[0];
     if(grid->shift(pos, next, this)) break;
-    rest(100);
+    sleep_for (milliseconds (100));
   }
   pos = next;
-}
-
-void
-entity::rest(int ms) {
-  if (ms == 0) {
-    u_dice dice(100, 2000);
-    ms = dice(dre);
-  }
-  sleep_for (milliseconds(ms));
-}
-
-void
-entity::die() {
-  grid->erase(pos, this);
 }
 
 /*** HELPERS ***/
@@ -92,15 +86,23 @@ entity::is_killed() {
 
 bool
 entity::similars_around(){
-  std::vector<position> vec = pos.pos_around();
-  for(unsigned i = 0; i < vec.size(); ++i) {
-    if(grid->get(vec[i]) != nullptr and
-       grid->get(vec[i])->get_sign() == get_sign() ) {
+  std::vector<position> places = pos.horizon(1);
+  for(unsigned i = 0; i < places.size(); ++i) {
+    if(grid->get(places[i]) != nullptr and
+       grid->get(places[i])->get_sign() == get_sign() ) {
       return true;
     }
   }
   return false;
 }
+
+/*
+position
+entity::scan(int horizon) {
+  for (int i=0; i<4; ++i){
+    pos.get_direction(i);
+  }
+}*/
 
 bool
 entity::can_eat(entity* other) {

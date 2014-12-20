@@ -1,14 +1,20 @@
+#include <cassert>
+
 #include "position.h"
 #include "settings.h"
 
-enum poles {north,east,south,west};
+int mod(int base, int modulo) {
+  assert(modulo > 0);
+  while (base < 0) {
+    base+=modulo;
+  }
+  return base%modulo;
+}
 
 position::position():
+                  x(0), y(0),
                   base(settings::get("base")),
-                  height(settings::get("height")),
-                  dice4(0,3),
-                  dice25(0,height - 1),
-                  dice80(0,base - 1){
+                  height(settings::get("height")){
 }
 
 position::position(int x, int y):
@@ -17,45 +23,45 @@ position::position(int x, int y):
   position::y = y;
 }
 
+position::operator int() {
+  return x+y*base;
+}
+
 position
 position::get_direction(int n) {
+  position next;
   switch(n){
-    case north: return position(x, y+1);
-    case east: return position(x+1, y);
-    case south: return position(x, y-1);
-    case west: return position(x-1, y);
+    case north: return position(x, (y+1)%height);
+    case east:  return position((x+1)%base, y);
+    case south: return position(x, mod(y-1, height));
+    case west:  return position(mod(x-1, base), y);
     default: throw "polo impossibile";
   }
 }
 
-position
-position::set_random(std::default_random_engine &dre) {
-  x=dice80(dre);
-  y=dice25(dre);
-  return *this;
-}
-
-position
-position::get_close(std::default_random_engine &dre){
-  position next;
-  do next = get_direction(dice4(dre));
-  while (!next.is_inside());
-  return next;
-}
-
 std::vector<position>
-position::pos_around() {
-  std::vector<position> vec;
-  for(int i=0; i<4; ++i) {
-    if(get_direction(i).is_inside())
-      vec.push_back(get_direction(i));
+position::horizon(int hrz) {
+  std::vector<position> places;
+  position next(x, y);
+  if (hrz==0) places.push_back(position(x,y));
+
+  for (int i=0; i<hrz; ++i) {//shift to extreme south-west
+    next = next.get_direction(south);
+    next = next.get_direction(west);
   }
-  return vec;
+
+  for(int dir=0; dir<4; ++dir) {
+    for(int shift=0; shift<hrz*2; ++shift) {
+      next = next.get_direction(dir);
+      assert(next.is_ok());
+      places.push_back(next);
+    }
+  }
+  return places;
 }
 
 bool
-position::is_inside() {
-  if( (x<0) or (x > base - 1) or
-      (y<0) or (y > height - 1)) return false;
-  return true;
+position::is_ok() {
+  return (x >= 0 and x < base and
+          y >= 0 and y < height);
 }

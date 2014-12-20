@@ -25,9 +25,10 @@
 #include "painter.h"
 #include "settings.h"
 
+using namespace std;
 int main(){
 
-  std::cout<<settings::get("base")<<std::endl;
+  //std::cout<<settings::get("base")<<std::endl;
 
   table field;
 
@@ -47,5 +48,4 @@ int main(){
   painter paint(&field);
   paint.show();
 
-  return 0;
 }
