@@ -18,7 +18,6 @@
 
 #include <iostream>
 #include <thread>
-
 #include "table.h"
 #include "sheep.h"
 #include "wolf.h"
@@ -48,4 +47,5 @@ int main(){
   painter paint(&field);
   paint.show();
 
+  return 0;
 }

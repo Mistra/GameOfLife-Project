@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <random>
+//#include <vector>
 
 #include "table.h"
 #include "position.h"
@@ -25,12 +26,13 @@ protected:
   void shift();
   virtual void reproduce()=0;
 
-  position scan(int horizon);
-  bool similars_around();
+  std::vector<position> scan(int sight);
+  bool similars_around(int horizon = 1);
 
   table* grid;
   position pos;
   int life_steps;
+  bool heat;
   int fertility;
   int rate; //reproduction rate
 private:

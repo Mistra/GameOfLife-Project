@@ -21,6 +21,7 @@ entity::entity(table* grid):
   unsigned seed = steady_clock::now().time_since_epoch().count();
   dre.seed(seed);
   pos = position(base_dice(dre), height_dice(dre));
+  heat = false;
 }
 
 entity::entity(table* grid, position p1):
@@ -35,12 +36,13 @@ void
 entity::operator()() {
   spawn();
   for (int i=0; i<life_steps; --life_steps) {
-    shift();
+    std::vector<position> places = think();
+    shift(places);
     reproduce();
-    sleep_for (milliseconds (rest_dice(dre) ));
+    sleep_for(milliseconds( rest_dice( dre )));
   }
   grid->erase(pos, this);
-  sleep_for (milliseconds (1000));//last to be painted
+  sleep_for( milliseconds (1000));//last to be painted
 }
 
 /*** PROTECTED ***/
@@ -48,10 +50,9 @@ entity::operator()() {
 void
 entity::spawn() {
   position next;
-  std::vector<position> places = pos.horizon(1);
+  std::vector<position> places = pos.get_positions_in_range(1);
   while (true) {
     std::shuffle(std::begin(places), std::end(places), dre);
-    //if (r_spawn) next = position(base_dice(dre), height_dice(dre));
     next = places[0]; //else
     if ( grid->set(next, this) ) break;
     sleep_for (milliseconds (100));
@@ -60,19 +61,16 @@ entity::spawn() {
 }
 
 void
-entity::shift() {
+entity::shift(std::vector<position>& places) {
   position next;
-  std::vector<position> places = pos.horizon(1);
   while (true) {
     std::shuffle(std::begin(places), std::end(places), dre);
-    //next = pos.get_close(dre);
     next = places[0];
     if(grid->shift(pos, next, this)) break;
     sleep_for (milliseconds (100));
   }
   pos = next;
 }
-
 /*** HELPERS ***/
 
 bool
@@ -84,25 +82,19 @@ entity::is_killed() {
   else return false;
 }
 
-bool
-entity::similars_around(){
-  std::vector<position> places = pos.horizon(1);
-  for(unsigned i = 0; i < places.size(); ++i) {
-    if(grid->get(places[i]) != nullptr and
-       grid->get(places[i])->get_sign() == get_sign() ) {
-      return true;
+std::vector<position>
+entity::find_in_range(int range, char sign) {
+  for (int dept=1; dept<sight; ++dept){
+    std::vector<position> places = pos.get_positions_in_range(dept);
+    for(unsigned i = 0; i < places.size(); ++i) {
+      if(grid->get(places[i]) != nullptr and
+         grid->get(places[i])->get_sign() == sign ){
+         return pos.get_close_positions_in_path_to(places[i]);
+      }
     }
   }
-  return false;
+  return std::vector<position>();
 }
-
-/*
-position
-entity::scan(int horizon) {
-  for (int i=0; i<4; ++i){
-    pos.get_direction(i);
-  }
-}*/
 
 bool
 entity::can_eat(entity* other) {

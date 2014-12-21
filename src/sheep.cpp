@@ -19,6 +19,13 @@ sheep::get_sign() const{
   return 's';
 }
 
+std::vector<position>
+sheep::think() {
+std::vector<position> places = scan(6, 's');
+if (places.size()==0)
+  places = pos.get_positions_in_range(1);
+}
+
 void
 sheep::reproduce() {
   ++fertility;
