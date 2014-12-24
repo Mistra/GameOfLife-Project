@@ -1,49 +1,30 @@
-#--------------------------------#
-#  Preys and Predators makefile  #
-#--------------------------------#
+SRCDIR   = src
+OBJDIR   = obj
+BINDIR   = bin
 
-PROJECT='Preys and Predators'
-MAKEFILE_VERSION=1.0
-PROJECT_VERSION=1.1dev
-AUTHOR=Giulio Mistrangelo
+TARGET   = bin
 
-#Variables used to customize the output of the makefile:
-INPUT_FILES=main.cpp table.cpp entity.cpp painter.cpp position.cpp sheep.cpp wolf.cpp settings.cpp
-#Source directory, default: src/ or leave blank
-S_DIR=src/ #src/common src/entity
-#Object directory, default: obj/ or leave blank
-O_DIR=obj/
-#Executable directory, default: exec/ or leave blank
-E_DIR=bin/
-#Name of the executable, default: project
-TARGET=project
+SOURCES  = $(wildcard $(SRCDIR)/*.cpp) $(wildcard $(SRCDIR)/*/*.cpp)
+IFLAG    = $(addprefix -I, $(dir $(SOURCES)))
+OBJECTS  = $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
-CC=g++
-CFLAGS=-c -Wall -std=c++11 -g #-D NDEBUG
-LDFLAGS=-lpthread
-SOURCE=$(addprefix $(S_DIR), $(INPUT_FILES))
-VPATH=$(S_DIR)
-OBJ=$(addprefix $(O_DIR), $(INPUT_FILES:.cpp=.o))
+CC       = g++
+CFLAGS   = -c -Wall -std=c++11 $(IFLAG) -g #-D NDEBUG
+LDFLAGS  = -lpthread
 
-all: $(TARGET)
-
-$(TARGET): $(OBJ)
-	@echo -e '\e[1;33m'linking: $(notdir $^) to $(notdir $@)'\033[0m'
-	@mkdir -p $(E_DIR)
-	@$(CC) -o $(E_DIR)$@ $^ $(LDFLAGS)
+all: $(BINDIR)/$(TARGET)
 	@echo -e '\e[1;32m'make: all done'\033[0m'
 
-$(O_DIR)%.o : %.cpp
+$(BINDIR)/$(TARGET): $(OBJECTS)
+	@echo -e '\e[1;33m'linking: $(notdir $^) to $(notdir $@)'\033[0m'
+	@mkdir -p $(dir $@ )
+	@$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
+
+$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@echo -e '\e[1;34m'compiling: $(notdir $<)'\033[0m'
-	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@mkdir -p $(dir $@ )
+	@$(CC) $(CFLAGS) $< -o $@
 
-## Clean Rule
-clean:
-	@-rm -fr $(E_DIR) $(O_DIR)
+clear:
+	@-rm -fr $(BINDIR) $(OBJDIR)
 	@echo -e '\e[1;35m'Cleared'\033[0m'
-
-about:
-	@echo -e '\e[1;34m'Project: $(PROJECT)'\033[0m'
-	@echo -e '\e[1;34m'Version: $(PROJECT_VERSION)'\033[0m'
-	@echo -e '\e[1;34m'Author: $(AUTHOR)'\033[0m'
